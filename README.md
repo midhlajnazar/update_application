@@ -30,7 +30,7 @@ Add the plugin to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  update_application: ^1.0.0
+  update_application: ^0.0.1
 ```
 
 Then run:
