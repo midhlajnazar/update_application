@@ -1,4 +1,4 @@
-package com.mjnaz.fi.ae.update_app 
+package com.mjnaz.fi.ae.update_application 
 
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
@@ -24,7 +24,7 @@ interface ActivityProvider {
     fun activity(): Activity
 }
 
-class UpdateAppPlugin : FlutterPlugin, 
+class UpdateApplicationPlugin : FlutterPlugin, 
 MethodChannel.MethodCallHandler,
 PluginRegistry.ActivityResultListener, 
 Application.ActivityLifecycleCallbacks,
@@ -33,7 +33,7 @@ EventChannel.StreamHandler
 {
 
     companion object {
-        private const val TAG = "UpdateAppPlugin"
+        private const val TAG = "UpdateApplicationPlugin"
         private const val REQUEST_CODE_START_UPDATE = 1276
     }
 
@@ -65,8 +65,8 @@ EventChannel.StreamHandler
 
     // --- Plugin Lifecycle ---
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        methodChannel = MethodChannel(binding.binaryMessenger, "update_app/methods")
-        eventChannel = EventChannel(binding.binaryMessenger, "update_app/stateEvents")
+        methodChannel = MethodChannel(binding.binaryMessenger, "update_application/methods")
+        eventChannel = EventChannel(binding.binaryMessenger, "update_application/stateEvents")
 
         methodChannel.setMethodCallHandler(this)
         eventChannel.setStreamHandler(this)

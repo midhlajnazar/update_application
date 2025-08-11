@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:update_app/update_app.dart';
+import 'package:update_application/update_application.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,13 +24,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     final UpdateConfig config = UpdateConfig(enableLogging: kDebugMode);
-    UpdateApp.configure(config);
+    UpdateApplication.configure(config);
     checkForUpdate();
   }
 
   Future<void> checkForUpdate() async {
     try {
-      final AppUpdateInfo? info = await UpdateApp.checkForUpdate();
+      final AppUpdateInfo? info = await UpdateApplication.checkForUpdate();
       if (info == null) return;
       final isUpdateAvailable =
           info.updateAvailability == UpdateAvailability.updateAvailable;
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'Update Available',
             content:
                 'A new version is available on App Store. Please update to continue',
-            onConfirm: () => UpdateApp.performImmediateUpdate(),
+            onConfirm: () => UpdateApplication.performImmediateUpdate(),
           );
         }
 
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 //   if (await canLaunchUrl(uri)) {
                 //     await launchUrl(uri, mode: LaunchMode.externalApplication);
                 //   }
-              UpdateApp.openIOSAppStore();
+              UpdateApplication.openIOSAppStore();
             },
           );
         }

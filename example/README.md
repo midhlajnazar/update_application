@@ -1,6 +1,6 @@
-# update_app_example
+# update_application_example
 
-Demonstrates how to use the update_app plugin.
+Demonstrates how to use the update_application plugin.
 
 ## Getting Started
 

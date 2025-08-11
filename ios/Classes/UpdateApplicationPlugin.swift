@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 
-public class UpdateAppPlugin: NSObject, FlutterPlugin {
+public class UpdateApplicationPlugin: NSObject, FlutterPlugin {
     
     // MARK: - Constants
     private enum Method: String {
@@ -24,10 +24,10 @@ public class UpdateAppPlugin: NSObject, FlutterPlugin {
     // MARK: - Flutter Plugin Registration
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
-            name: "update_app/methods",
+            name: "update_application/methods",
             binaryMessenger: registrar.messenger()
         )
-        let instance = UpdateAppPlugin()
+        let instance = UpdateApplicationPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 

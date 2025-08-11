@@ -1,4 +1,4 @@
-package com.mjnaz.fi.ae.update_app
+package com.mjnaz.fi.ae.update_application
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -13,10 +13,10 @@ import org.mockito.Mockito
  * you can run them directly from IDEs that support JUnit such as Android Studio.
  */
 
-internal class UpdateAppPluginTest {
+internal class UpdateApplicationPluginTest {
   @Test
   fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
-    val plugin = UpdateAppPlugin()
+    val plugin = UpdateApplicationPlugin()
 
     val call = MethodCall("getPlatformVersion", null)
     val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)

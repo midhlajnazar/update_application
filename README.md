@@ -1,5 +1,5 @@
 
-# UpdateApp Flutter Plugin
+# UpdateApplication Flutter Plugin
 
 A cross-platform Flutter plugin for checking, managing, and performing **in-app updates** on **Android** and **iOS**.
 Supports Google Play **in-app updates** (immediate and flexible) and iOS **App Store version checks** with customizable update flows.
@@ -30,7 +30,7 @@ Add the plugin to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  update_app: ^1.0.0
+  update_application: ^1.0.0
 ```
 
 Then run:
@@ -46,10 +46,10 @@ flutter pub get
 ### 1️⃣ Configure the Plugin (Optional)
 
 ```dart
-import 'package:update_app/update_app.dart';
+import 'package:update_application/update_application.dart';
 
 void main() {
-  UpdateApp.configure(UpdateConfig(enableLogging: true));
+  UpdateApplication.configure(UpdateConfig(enableLogging: true));
   runApp(MyApp());
 }
 ```
@@ -59,13 +59,13 @@ void main() {
 ### 2️⃣ Check for Updates
 
 ```dart
-final updateInfo = await UpdateApp.checkForUpdate();
+final updateInfo = await UpdateApplication.checkForUpdate();
 
 if (updateInfo?.isUpdateAvailable ?? false) {
   print('Update available: ${updateInfo?.availableVersionCode}');
   
   if (updateInfo!.canUpdateImmediately) {
-    await UpdateApp.performImmediateUpdate();
+    await UpdateApplication.performImmediateUpdate();
   } else if (updateInfo.canUpdateFlexibly) {
     // Show your own prompt and handle flexible update
   }
@@ -79,7 +79,7 @@ if (updateInfo?.isUpdateAvailable ?? false) {
 ### 3️⃣ Listen for Install Status (Android Flexible Update)
 
 ```dart
-UpdateApp.installUpdateListener.listen((status) {
+UpdateApplication.installUpdateListener.listen((status) {
   print('Install status: ${status.description}');
 });
 ```
@@ -89,7 +89,7 @@ UpdateApp.installUpdateListener.listen((status) {
 ### 4️⃣ Open iOS App Store
 
 ```dart
-await UpdateApp.openIOSAppStore();
+await UpdateApplication.openIOSAppStore();
 ```
 
 ---
@@ -130,10 +130,10 @@ await UpdateApp.openIOSAppStore();
 ## 🔍 Example Output
 
 ```plaintext
-[UpdateApp] Checking for updates...
-[UpdateApp] Android update check completed: Update available
-[UpdateApp] Starting immediate update...
-[UpdateApp] Immediate update completed successfully
+[UpdateApplication] Checking for updates...
+[UpdateApplication] Android update check completed: Update available
+[UpdateApplication] Starting immediate update...
+[UpdateApplication] Immediate update completed successfully
 ```
 
 ---
@@ -150,11 +150,11 @@ Example:
 
 ```dart
 try {
-    final AppUpdateInfo? info = await UpdateApp.checkForUpdate();
+    final AppUpdateInfo? info = await UpdateApplication.checkForUpdate();
     if (info == null) return;
     final isUpdateAvailable =  info.updateAvailability == UpdateAvailability.updateAvailable;
     if (isUpdateAvailable) {
-        await UpdateApp.performImmediateUpdate();
+        await UpdateApplication.performImmediateUpdate();
     }
 } on UpdateException catch (e) {
   print('Update failed: $e');

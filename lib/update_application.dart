@@ -139,19 +139,17 @@ class UpdateConfig {
 }
 
 /// Main class for handling app updates across Android and iOS platforms
-class UpdateApp {
-  static const MethodChannel _channel = MethodChannel('update_app/methods');
-  static const EventChannel _installListener = EventChannel('update_app/stateEvents');
+class UpdateApplication {
+  static const MethodChannel _channel = MethodChannel('update_application/methods');
+  static const EventChannel _installListener = EventChannel('update_application/stateEvents');
   
   static UpdateConfig _config = const UpdateConfig();
-  static AppUpdateInfo? _cachedUpdateInfo;
-  static DateTime? _cacheTimestamp;
   static StreamController<InstallStatus>? _statusController;
 
   /// Configure the update behavior
   static void configure(UpdateConfig config) {
     _config = config;
-    _log('UpdateApp configured with: $config');
+    _log('UpdateApplication configured with: $config');
   }
 
 
@@ -407,7 +405,7 @@ class UpdateApp {
   /// Internal logging method
   static void _log(String message) {
     if (_config.enableLogging) {
-      print('[UpdateApp] $message');
+      print('[UpdateApplication] $message');
     }
   }
 
@@ -415,7 +413,7 @@ class UpdateApp {
   static void dispose() {
     _statusController?.close();
     _statusController = null;
-    _log('UpdateApp disposed');
+    _log('UpdateApplication disposed');
   }
 }
 
