@@ -123,24 +123,27 @@ class UpdateException implements Exception {
   const UpdateException(this.message, {this.code, this.originalError});
 
   @override
-  String toString() => 'UpdateException: $message${code != null ? ' (Code: $code)' : ''}';
+  String toString() =>
+      'UpdateException: $message${code != null ? ' (Code: $code)' : ''}';
 }
 
 /// Configuration for update behavior
 class UpdateConfig {
   /// Whether to enable debug logging
   final bool enableLogging;
-     
-  const UpdateConfig({
-    this.enableLogging = kDebugMode,  
-  });
+
+  const UpdateConfig({this.enableLogging = kDebugMode});
 }
 
 /// Main class for handling app updates across Android and iOS platforms
 class UpdateApplication {
-  static const MethodChannel _channel = MethodChannel('update_application/methods');
-  static const EventChannel _installListener = EventChannel('update_application/stateEvents');
-  
+  static const MethodChannel _channel = MethodChannel(
+    'update_application/methods',
+  );
+  static const EventChannel _installListener = EventChannel(
+    'update_application/stateEvents',
+  );
+
   static UpdateConfig _config = const UpdateConfig();
   static StreamController<InstallStatus>? _statusController;
 
@@ -150,19 +153,20 @@ class UpdateApplication {
     _log('UpdateApplication configured with: $config');
   }
 
-
-
   /// Check for available updates with enhanced error handling and caching
   static Future<AppUpdateInfo?> checkForUpdate() async {
     try {
       _log('Checking for updates...');
-      
+
       if (Platform.isAndroid) {
         return await _checkAndroidUpdate();
       } else if (Platform.isIOS) {
         return await _checkiOSUpdate();
       } else {
-        throw UpdateException('Platform not supported', code: 'PLATFORM_NOT_SUPPORTED');
+        throw UpdateException(
+          'Platform not supported',
+          code: 'PLATFORM_NOT_SUPPORTED',
+        );
       }
     } catch (e) {
       _log('Error checking for updates: $e');
@@ -174,16 +178,20 @@ class UpdateApplication {
   /// Android-specific update check
   static Future<AppUpdateInfo?> _checkAndroidUpdate() async {
     final result = await _channel.invokeMethod('checkForUpdate');
-    
+
     final updateInfo = AppUpdateInfo(
       updateAvailability: UpdateAvailability.values.firstWhere(
         (element) => element.value == result['updateAvailability'],
         orElse: () => UpdateAvailability.unknown,
       ),
       immediateUpdateAllowed: result['immediateAllowed'] ?? false,
-      immediateAllowedPreconditions: List<int>.from(result['immediateAllowedPreconditions'] ?? []),
+      immediateAllowedPreconditions: List<int>.from(
+        result['immediateAllowedPreconditions'] ?? [],
+      ),
       flexibleUpdateAllowed: result['flexibleAllowed'] ?? false,
-      flexibleAllowedPreconditions: List<int>.from(result['flexibleAllowedPreconditions'] ?? []),
+      flexibleAllowedPreconditions: List<int>.from(
+        result['flexibleAllowedPreconditions'] ?? [],
+      ),
       availableVersionCode: result['availableVersionCode'],
       installStatus: InstallStatus.values.firstWhere(
         (element) => element.value == result['installStatus'],
@@ -193,8 +201,10 @@ class UpdateApplication {
       clientVersionStalenessDays: result['clientVersionStalenessDays'],
       updatePriority: result['updatePriority'] ?? 0,
     );
- 
-    _log('Android update check completed: ${updateInfo.updateAvailability.description}');
+
+    _log(
+      'Android update check completed: ${updateInfo.updateAvailability.description}',
+    );
     return updateInfo;
   }
 
@@ -203,16 +213,22 @@ class UpdateApplication {
     try {
       // Get package info with timeout
       final packageInfo = await _channel.invokeMethod('getPackageInfo');
-      
+
       if (packageInfo == null) {
-        throw UpdateException('Failed to get package info', code: 'PACKAGE_INFO_NULL');
+        throw UpdateException(
+          'Failed to get package info',
+          code: 'PACKAGE_INFO_NULL',
+        );
       }
 
       final packageName = packageInfo['packageName'] as String? ?? '';
       final currentVersion = packageInfo['version'] as String? ?? '';
 
       if (packageName.isEmpty || currentVersion.isEmpty) {
-        throw UpdateException('Invalid package configuration', code: 'INVALID_PACKAGE_CONFIG');
+        throw UpdateException(
+          'Invalid package configuration',
+          code: 'INVALID_PACKAGE_CONFIG',
+        );
       }
 
       // Fetch App Store info with timeout
@@ -233,11 +249,14 @@ class UpdateApplication {
         return _createNoUpdateInfo(packageName);
       }
 
-      final isUpdateAvailable = _isVersionNewer(appStoreVersion, currentVersion);
-      
+      final isUpdateAvailable = _isVersionNewer(
+        appStoreVersion,
+        currentVersion,
+      );
+
       final updateInfo = AppUpdateInfo(
-        updateAvailability: isUpdateAvailable 
-            ? UpdateAvailability.updateAvailable 
+        updateAvailability: isUpdateAvailable
+            ? UpdateAvailability.updateAvailable
             : UpdateAvailability.updateNotAvailable,
         immediateUpdateAllowed: false,
         immediateAllowedPreconditions: null,
@@ -253,11 +272,15 @@ class UpdateApplication {
         currentVersion: currentVersion,
       );
 
-      _log('iOS update check completed: ${updateInfo.updateAvailability.description}');
+      _log(
+        'iOS update check completed: ${updateInfo.updateAvailability.description}',
+      );
       return updateInfo;
-      
     } on TimeoutException {
-      throw UpdateException('Network timeout during update check', code: 'NETWORK_TIMEOUT');
+      throw UpdateException(
+        'Network timeout during update check',
+        code: 'NETWORK_TIMEOUT',
+      );
     } catch (e) {
       if (e is UpdateException) rethrow;
       throw UpdateException('iOS update check failed', originalError: e);
@@ -295,7 +318,7 @@ class UpdateApplication {
   /// Enhanced version number calculation with better error handling
   static int getExtendedVersionNumber(String version) {
     if (version.isEmpty) return 0;
-    
+
     try {
       // Handle versions like "1.0.0-beta" or "1.0.0+123"
       final cleanVersion = version.split(RegExp(r'[-+]')).first;
@@ -303,17 +326,20 @@ class UpdateApplication {
         final parsed = int.tryParse(part);
         return parsed ?? 0;
       }).toList();
-      
+
       // Ensure we have at least 3 parts
       while (parts.length < 3) {
         parts.add(0);
       }
-      
+
       // Support up to 4 parts (major.minor.patch.build)
       if (parts.length >= 4) {
-        return parts[0] * 1000000 + parts[1] * 10000 + parts[2] * 100 + parts[3];
+        return parts[0] * 1000000 +
+            parts[1] * 10000 +
+            parts[2] * 100 +
+            parts[3];
       }
-      
+
       return parts[0] * 10000 + parts[1] * 100 + parts[2];
     } catch (e) {
       _log('Error parsing version "$version": $e');
@@ -334,7 +360,12 @@ class UpdateApplication {
         .map((int value) => _mapInstallStatus(value))
         .handleError((error) {
           _log('Error in install status stream: $error');
-          _statusController?.addError(UpdateException('Install status stream error', originalError: error));
+          _statusController?.addError(
+            UpdateException(
+              'Install status stream error',
+              originalError: error,
+            ),
+          );
         });
   }
 
@@ -349,8 +380,8 @@ class UpdateApplication {
   /// Perform immediate update with enhanced error handling
   static Future<AppUpdateResult> performImmediateUpdate() async {
     if (!Platform.isAndroid) {
-         await _channel.invokeMethod('openIOSAppStore');
-        return AppUpdateResult.success;
+      await _channel.invokeMethod('openIOSAppStore');
+      return AppUpdateResult.success;
     }
 
     try {
@@ -359,15 +390,15 @@ class UpdateApplication {
       _log('Immediate update completed successfully');
       return AppUpdateResult.success;
     } on PlatformException catch (e) {
-      _log('Platform exception during immediate update: ${e.code} - ${e.message}');
+      _log(
+        'Platform exception during immediate update: ${e.code} - ${e.message}',
+      );
       return _mapPlatformException(e);
     } catch (e) {
       _log('Unexpected error during immediate update: $e');
       return AppUpdateResult.inAppUpdateFailed;
     }
   }
-
-
 
   /// Open App Store page on iOS
   static Future<bool> openIOSAppStore() async {
@@ -385,7 +416,6 @@ class UpdateApplication {
     }
   }
 
- 
   /// Map platform exception to AppUpdateResult
   static AppUpdateResult _mapPlatformException(PlatformException e) {
     switch (e.code) {
@@ -473,7 +503,8 @@ class AppUpdateInfo {
   });
 
   /// Whether any update is available
-  bool get isUpdateAvailable => updateAvailability == UpdateAvailability.updateAvailable;
+  bool get isUpdateAvailable =>
+      updateAvailability == UpdateAvailability.updateAvailable;
 
   /// Whether the app can be updated immediately
   bool get canUpdateImmediately => isUpdateAvailable && immediateUpdateAllowed;
@@ -488,7 +519,8 @@ class AppUpdateInfo {
   bool get isStaleUpdate => (clientVersionStalenessDays ?? 0) > 7;
 
   /// Whether this is a critical update (high priority and stale)
-  bool get isCriticalUpdate => priority.value >= UpdatePriority.high.value || isStaleUpdate;
+  bool get isCriticalUpdate =>
+      priority.value >= UpdatePriority.high.value || isStaleUpdate;
 
   /// Create a copy with updated values
   AppUpdateInfo copyWith({
@@ -508,14 +540,19 @@ class AppUpdateInfo {
   }) {
     return AppUpdateInfo(
       updateAvailability: updateAvailability ?? this.updateAvailability,
-      immediateUpdateAllowed: immediateUpdateAllowed ?? this.immediateUpdateAllowed,
-      immediateAllowedPreconditions: immediateAllowedPreconditions ?? this.immediateAllowedPreconditions,
-      flexibleUpdateAllowed: flexibleUpdateAllowed ?? this.flexibleUpdateAllowed,
-      flexibleAllowedPreconditions: flexibleAllowedPreconditions ?? this.flexibleAllowedPreconditions,
+      immediateUpdateAllowed:
+          immediateUpdateAllowed ?? this.immediateUpdateAllowed,
+      immediateAllowedPreconditions:
+          immediateAllowedPreconditions ?? this.immediateAllowedPreconditions,
+      flexibleUpdateAllowed:
+          flexibleUpdateAllowed ?? this.flexibleUpdateAllowed,
+      flexibleAllowedPreconditions:
+          flexibleAllowedPreconditions ?? this.flexibleAllowedPreconditions,
       availableVersionCode: availableVersionCode ?? this.availableVersionCode,
       installStatus: installStatus ?? this.installStatus,
       packageName: packageName ?? this.packageName,
-      clientVersionStalenessDays: clientVersionStalenessDays ?? this.clientVersionStalenessDays,
+      clientVersionStalenessDays:
+          clientVersionStalenessDays ?? this.clientVersionStalenessDays,
       updatePriority: updatePriority ?? this.updatePriority,
       appStoreVersion: appStoreVersion ?? this.appStoreVersion,
       appStoreLink: appStoreLink ?? this.appStoreLink,
@@ -530,7 +567,8 @@ class AppUpdateInfo {
           runtimeType == other.runtimeType &&
           updateAvailability == other.updateAvailability &&
           immediateUpdateAllowed == other.immediateUpdateAllowed &&
-          immediateAllowedPreconditions == other.immediateAllowedPreconditions &&
+          immediateAllowedPreconditions ==
+              other.immediateAllowedPreconditions &&
           flexibleUpdateAllowed == other.flexibleUpdateAllowed &&
           flexibleAllowedPreconditions == other.flexibleAllowedPreconditions &&
           availableVersionCode == other.availableVersionCode &&

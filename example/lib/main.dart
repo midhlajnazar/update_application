@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        if (Platform.isIOS && info.appStoreLink != null) { 
+        if (Platform.isIOS && info.appStoreLink != null) {
           final appStoreLink = info.appStoreLink;
 
           _showUpdateDialog(
@@ -53,10 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
             content:
                 'A new version is available on App Store. Please update to continue',
             onConfirm: () {
-                //  final uri = Uri.parse(appStoreLink);
-                //   if (await canLaunchUrl(uri)) {
-                //     await launchUrl(uri, mode: LaunchMode.externalApplication);
-                //   }
+              //  final uri = Uri.parse(appStoreLink);
+              //   if (await canLaunchUrl(uri)) {
+              //     await launchUrl(uri, mode: LaunchMode.externalApplication);
+              //   }
               UpdateApplication.openIOSAppStore();
             },
           );

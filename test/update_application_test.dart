@@ -7,13 +7,13 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockUpdateApplicationPlatform
     with MockPlatformInterfaceMixin
     implements UpdateApplicationPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
 }
 
 void main() {
-  final UpdateApplicationPlatform initialPlatform = UpdateApplicationPlatform.instance;
+  final UpdateApplicationPlatform initialPlatform =
+      UpdateApplicationPlatform.instance;
 
   test('$MethodChannelUpdateApplication is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelUpdateApplication>());
@@ -21,7 +21,8 @@ void main() {
 
   test('getPlatformVersion', () async {
     UpdateApplication UpdateApplicationPlugin = UpdateApplication();
-    MockUpdateApplicationPlatform fakePlatform = MockUpdateApplicationPlatform();
+    MockUpdateApplicationPlatform fakePlatform =
+        MockUpdateApplicationPlatform();
     UpdateApplicationPlatform.instance = fakePlatform;
 
     // expect(await UpdateApplicationPlugin.getPlatformVersion(), '42');
