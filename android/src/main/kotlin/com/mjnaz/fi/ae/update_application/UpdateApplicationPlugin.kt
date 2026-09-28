@@ -71,6 +71,8 @@ EventChannel.StreamHandler
         methodChannel.setMethodCallHandler(this)
         eventChannel.setStreamHandler(this)
 
+        appUpdateManager = AppUpdateManagerFactory.create(binding.applicationContext)
+
         installStateUpdatedListener = InstallStateUpdatedListener { state ->
             emitInstallState(state.installStatus())
         }
@@ -82,6 +84,7 @@ EventChannel.StreamHandler
         methodChannel.setMethodCallHandler(null)
         eventChannel.setStreamHandler(null)
         appUpdateManager?.unregisterListener(installStateUpdatedListener)
+        appUpdateManager = null
     }
 
     // --- Method Call Handler ---
@@ -184,7 +187,6 @@ EventChannel.StreamHandler
 
         activityProvider?.addActivityResultListener(this)
         activity.application.registerActivityLifecycleCallbacks(this)
-        appUpdateManager = AppUpdateManagerFactory.create(activity)
 
         appUpdateManager?.appUpdateInfo?.addOnSuccessListener { info ->
             appUpdateInfo = info
