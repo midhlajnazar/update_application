@@ -1,3 +1,7 @@
+## 0.0.5
+
+- Fixed Android build failure caused by a stray `package android` line at the top of `android/build.gradle` (present since 0.0.3).
+
 ## 0.0.4
 
 - Added Swift Package Manager support for iOS (`ios/update_application/Package.swift`); CocoaPods remains supported.

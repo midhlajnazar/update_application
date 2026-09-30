@@ -1,6 +1,6 @@
 name: update_application
 description: A cross-platform Flutter plugin for in-app updates on Android & iOS.
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/midhlajnazar/update_application
 repository: https://github.com/midhlajnazar/update_application
 issue_tracker: https://github.com/midhlajnazar/update_application/issues
